@@ -378,31 +378,6 @@ async function loadQuestions() {
       $("answers").appendChild(b);
     });
     message("quizMsg", "");
-  } match /quizAttempts/{attemptId} {
-  allow create: if
-    request.resource.data.keys().hasAll([
-      'playerName',
-      'score',
-      'totalQuestions',
-      'percentage',
-      'answers',
-      'completedAt'
-    ]) &&
-    request.resource.data.playerName is string &&
-    request.resource.data.playerName.size() <= 35 &&
-    request.resource.data.score is int &&
-    request.resource.data.totalQuestions is int &&
-    request.resource.data.totalQuestions > 0 &&
-    request.resource.data.score >= 0 &&
-    request.resource.data.score <= request.resource.data.totalQuestions &&
-    request.resource.data.percentage is int &&
-    request.resource.data.answers is list &&
-    request.resource.data.answers.size() == request.resource.data.totalQuestions &&
-    request.resource.data.completedAt == request.time;
-
-  allow read, update, delete: if
-    request.auth != null &&
-    request.auth.uid == "DFKEIidcXFfIN9ewqwW9M34Lr852";
   }
 </script>
 </body>
