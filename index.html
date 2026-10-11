@@ -1,77 +1,493 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Anya's BFF Quiz 💗</title>
-<style>
-body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#ffe0ef,#f4dfff);min-height:100vh;display:grid;place-items:center;margin:0;padding:16px;box-sizing:border-box;color:#743451}
-.card{background:white;padding:26px 20px;border-radius:24px;text-align:center;max-width:400px;width:100%;box-sizing:border-box;box-shadow:0 8px 28px #d98ab055}
-h1{color:#e34d91}
-button{background:#ed69a5;color:white;border:0;padding:13px 16px;border-radius:12px;font-size:16px;margin:6px;cursor:pointer}
-#options{display:flex;flex-direction:column;align-items:stretch}
-#options button{background:#fff0f7;color:#9c3569;border:1px solid #f3a3c8}
-#message{min-height:24px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Anya BFF Quiz 💗</title>
+  <style>
+    body {
+      margin: 0; padding: 20px; font-family: Arial, sans-serif;
+      background: linear-gradient(135deg,#ffe0ed,#f0dcff);
+      color: #713b59;
+    }
+    main {
+      max-width: 480px; margin: 25px auto; padding: 24px;
+      border-radius: 24px; background: #fffafc;
+      box-shadow: 0 8px 30px #c46b9125;
+    }
+    h1 { color: #e64f91; text-align: center; }
+    input, button {
+      display: block; width: 100%; padding: 13px; margin: 10px 0;
+      border-radius: 12px; border: 1px solid #edb6cf;
+      font-size: 16px; box-sizing: border-box;
+    }
+    button { background: #ed70a5; color: white; border: 0; }
+    .secondary { background: #f8e1ed; color: #913e68; }
+    .hidden { display: none; }
+    .msg { overflow-wrap: anywhere; }
+  </style>
 </head>
 <body>
-<main class="card">
-<div style="font-size:42px">🎀💗🧸</div>
-<h1>Anya's BFF Quiz</h1>
-<p>Let's see how well you know your bestie! 🥹💕</p>
-<p id="question">Ready to start?</p>
-<div id="options"></div>
-<p id="message"></p>
-<button id="start" onclick="startQuiz()">Start Quiz 💖</button>
+<main>
+  <h1>💗 Anya's BFF Quiz 💗</h1>
+
+  <section id="home">
+    <p>Kitni achhi tarah jaanti ho mujhe? 🥰</p>
+    <button id="playBtn">Start Quiz 💕</button>
+    <button id="adminBtn" class="secondary">Admin Login 🔐</button>
+  </section>
+
+  <section id="login" class="hidden">
+    <h2>Admin Login</h2>
+    <input id="email" type="email" placeholder="Admin email">
+    <input id="password" type="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <button class="secondary" data-home>Back</button>
+  </section>
+
+  <section id="admin" class="hidden">
+    <h2>Admin Panel 🎀</h2>
+    <p>New question add karo:</p>
+    <input id="question" placeholder="Question">
+    <input id="opt0" placeholder="Option 1">
+    <input id="opt1" placeholder="Option 2">
+    <input id="opt2" placeholder="Option 3">
+    <label for="correct">Correct answer:</label>
+    <select id="correct">
+      <option value="0">Option 1</option>
+      <option value="1">Option 2</option>
+      <option value="2">Option 3</option>
+    </select>
+    <button id="saveBtn">Save Question ☁️</button>
+    <p id="adminMsg" class="msg"></p>
+    <h3>Saved questions</h3>
+    <div id="questionList"></div>
+    <button id="logoutBtn" class="secondary">Logout</button>
+  </section>
+
+  <section id="quiz" class="hidden">
+    <p id="progress"></p>
+    <h3 id="quizQuestion"></h3>
+    <div id="answers"></div>
+    <p id="quizMsg" class="msg"></p>
+    <button class="secondary" data-home>Home</button>
+  </section>
 </main>
-<script>
-const questions=[
-{q:"What makes our friendship special? 💗",options:["Trust and care","Only gifts","Nothing"],answer:0},
-{q:"What should best friends do? 🫶",options:["Support each other","Ignore each other","Never talk"],answer:0},
-{q:"Our friendship deserves... 🎀",options:["Lots of happiness","More arguments","No memories"],answer:0},
-{q:"What is important in a friendship? 💕",options:["Honesty","Lies","Ignoring"],answer:0},
-{q:"Best friends make the best... 🧸",options:["Memories","Excuses","Arguments"],answer:0}
-];
-let current=0,score=0,locked=false;
-function startQuiz(){
-current=0;score=0;locked=false;
-document.getElementById("start").style.display="none";
-document.getElementById("message").textContent="";
-showQuestion();
-}
-function showQuestion(){
-if(current>=questions.length){
-document.getElementById("question").textContent="Quiz completed! 🎉";
-document.getElementById("options").innerHTML="";
-document.getElementById("message").textContent="Your score: "+score+"/"+questions.length+" 💗";
-document.getElementById("start").textContent="Play Again 💕";
-document.getElementById("start").style.display="inline-block";
-return;
-}
-locked=false;
-const item=questions[current];
-document.getElementById("question").textContent=(current+1)+". "+item.q;
-document.getElementById("message").textContent="";
-const options=document.getElementById("options");
-options.innerHTML="";
-item.options.forEach((option,index)=>{
-const btn=document.createElement("button");
-btn.textContent=option;
-btn.onclick=()=>{
-if(locked)return;
-locked=true;
-if(index===item.answer){
-score++;
-document.getElementById("message").textContent="Correct! 💖";
-}else{
-document.getElementById("message").textContent="Nice try, bestie! 💕";
-}
-setTimeout(()=>{current++;showQuestion()},700);
-};
-options.appendChild(btn);
-});
-}
+
+<script type="module">
+  import { initializeApp } from
+    "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import {
+    getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+  // Firebase Console se apni asli values yahan bharo.
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  // Firebase Authentication se apna Admin UID yahan bharo.
+  const ADMIN_UID = "YOUR_ADMIN_UID";
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const $ = id => document.getElementById(id);
+  let questions = [];
+  let index = 0, score = 0;
+
+  function show(id) {
+    ["home", "login", "admin", "quiz"].forEach(name =>
+      $(name).classList.toggle("hidden", name !== id)
+    );
+  }
+
+  function message(id, text) { $(id).textContent = text; }
+
+  async function loadQuestions() {
+    const q = query(collection(db, "questions"), orderBy("createdAt", "asc"));
+    const snap = await getDocs(q);
+    questions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
+
+  async function refreshAdminList() {
+    await loadQuestions();
+    $("questionList").replaceChildren();
+    questions.forEach(item => {
+      const p = document.createElement("p");
+      p.textContent = "💗 " + item.question;
+      $("questionList").appendChild(p);
+    });
+  }
+
+  $("adminBtn").onclick = () => show("login");
+
+  $("loginBtn").onclick = async () => {
+    try {
+      const credential = await signInWithEmailAndPassword(
+        auth, $("email").value.trim(), $("password").value
+      );
+      if (credential.user.uid !== ADMIN_UID) {
+        await signOut(auth);
+        message("adminMsg", "Admin access nahi hai.");
+        alert("Is account ko Admin access nahi hai.");
+        return;
+      }
+      show("admin");
+      await refreshAdminList();
+    } catch (e) {
+      alert("Login nahi hua. Email, password aur Firebase settings check karo.");
+    }
+  };
+
+  onAuthStateChanged(auth, user => {
+    if (user && user.uid === ADMIN_UID) {
+      show("admin");
+      refreshAdminList().catch(() => {});
+    }
+  });
+
+  $("saveBtn").onclick = async () => {
+    const user = auth.currentUser;
+    if (!user || user.uid !== ADMIN_UID) {
+      alert("Pehle Admin login karo.");
+      return;
+    }
+
+    const question = $("question").value.trim();
+    const options = [$("opt0").value.trim(), $("opt1").value.trim(),
+                     $("opt2").value.trim()];
+    const correctIndex = Number($("correct").value);
+
+    if (!question || options.some(x => !x)) {
+      message("adminMsg", "Question aur teeno options bharo.");
+      return;
+    }
+
+    $("saveBtn").disabled = true;
+    try {
+      await addDoc(collection(db, "questions"), {
+        question, options, correctIndex, createdAt: serverTimestamp()
+      });
+      $("question").value = "";
+      ["opt0", "opt1", "opt2"].forEach(id => $(id).value = "");
+      message("adminMsg", "Question Firestore mein save ho gaya! 💗");
+      await refreshAdminList();
+    } catch (e) {
+      message("adminMsg", "Save nahi hua. Firestore Rules aur config check karo.");
+      console.error(e);
+    } finally {
+      $("saveBtn").disabled = false;
+    }
+  };
+
+  $("logoutBtn").onclick = async () => {
+    await signOut(auth);
+    show("home");
+  };
+
+  document.querySelectorAll("[data-home]").forEach(b =>
+    b.onclick = () => show("home")
+  );
+
+  $("playBtn").onclick = async () => {
+    show("quiz");
+    $("answers").replaceChildren();
+    message("quizMsg", "Questions load ho rahe hain...");
+    try {
+      await loadQuestions();
+      if (!questions.length) {
+        message("quizMsg", "Abhi questions nahi hain. Baad mein try karo 💗");
+        return;
+      }
+      index = 0; score = 0;
+      renderQuestion();
+    } catch (e) {
+      message("quizMsg", "Questions load nahi hue. Firebase Rules check karo.");
+    }
+  };
+
+  function renderQuestion() {
+    if (index >= questions.length) {
+      $("quizQuestion").textContent =
+        `Quiz complete! Score: ${score}/${questions.length} 💕`;
+      $("progress").textContent = "Well done!";
+      $("answers").replaceChildren();
+      message("quizMsg", "Thanks for playing! 💗");
+      return;
+    }
+    const item = questions[index];
+    $("progress").textContent = `Question ${index + 1} / ${questions.length}`;
+    $("quizQuestion").textContent = item.question;
+    $("answers").replaceChildren();
+
+    item.options.forEach((option, i) => {
+      const b = document.createElement("button");
+      b.textContent = option;
+      b.onclick = () => {
+        if (i === item.correctIndex) score++;
+        index++;
+        renderQuestion();
+      };
+      $("answers").appendChild(b);
+    });
+    message("quizMsg", "");
+  }
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Anya BFF Quiz 💗</title>
+  <style>
+    body {
+      margin: 0; padding: 20px; font-family: Arial, sans-serif;
+      background: linear-gradient(135deg,#ffe0ed,#f0dcff);
+      color: #713b59;
+    }
+    main {
+      max-width: 480px; margin: 25px auto; padding: 24px;
+      border-radius: 24px; background: #fffafc;
+      box-shadow: 0 8px 30px #c46b9125;
+    }
+    h1 { color: #e64f91; text-align: center; }
+    input, button {
+      display: block; width: 100%; padding: 13px; margin: 10px 0;
+      border-radius: 12px; border: 1px solid #edb6cf;
+      font-size: 16px; box-sizing: border-box;
+    }
+    button { background: #ed70a5; color: white; border: 0; }
+    .secondary { background: #f8e1ed; color: #913e68; }
+    .hidden { display: none; }
+    .msg { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>💗 Anya's BFF Quiz 💗</h1>
+
+  <section id="home">
+    <p>Kitni achhi tarah jaanti ho mujhe? 🥰</p>
+    <button id="playBtn">Start Quiz 💕</button>
+    <button id="adminBtn" class="secondary">Admin Login 🔐</button>
+  </section>
+
+  <section id="login" class="hidden">
+    <h2>Admin Login</h2>
+    <input id="email" type="email" placeholder="Admin email">
+    <input id="password" type="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <button class="secondary" data-home>Back</button>
+  </section>
+
+  <section id="admin" class="hidden">
+    <h2>Admin Panel 🎀</h2>
+    <p>New question add karo:</p>
+    <input id="question" placeholder="Question">
+    <input id="opt0" placeholder="Option 1">
+    <input id="opt1" placeholder="Option 2">
+    <input id="opt2" placeholder="Option 3">
+    <label for="correct">Correct answer:</label>
+    <select id="correct">
+      <option value="0">Option 1</option>
+      <option value="1">Option 2</option>
+      <option value="2">Option 3</option>
+    </select>
+    <button id="saveBtn">Save Question ☁️</button>
+    <p id="adminMsg" class="msg"></p>
+    <h3>Saved questions</h3>
+    <div id="questionList"></div>
+    <button id="logoutBtn" class="secondary">Logout</button>
+  </section>
+
+  <section id="quiz" class="hidden">
+    <p id="progress"></p>
+    <h3 id="quizQuestion"></h3>
+    <div id="answers"></div>
+    <p id="quizMsg" class="msg"></p>
+    <button class="secondary" data-home>Home</button>
+  </section>
+</main>
+
+<script type="module">
+  import { initializeApp } from
+    "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import {
+    getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+  // Firebase Console se apni asli values yahan bharo.
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  // Firebase Authentication se apna Admin UID yahan bharo.
+  const ADMIN_UID = "YOUR_ADMIN_UID";
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const $ = id => document.getElementById(id);
+  let questions = [];
+  let index = 0, score = 0;
+
+  function show(id) {
+    ["home", "login", "admin", "quiz"].forEach(name =>
+      $(name).classList.toggle("hidden", name !== id)
+    );
+  }
+
+  function message(id, text) { $(id).textContent = text; }
+
+  async function loadQuestions() {
+    const q = query(collection(db, "questions"), orderBy("createdAt", "asc"));
+    const snap = await getDocs(q);
+    questions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
+
+  async function refreshAdminList() {
+    await loadQuestions();
+    $("questionList").replaceChildren();
+    questions.forEach(item => {
+      const p = document.createElement("p");
+      p.textContent = "💗 " + item.question;
+      $("questionList").appendChild(p);
+    });
+  }
+
+  $("adminBtn").onclick = () => show("login");
+
+  $("loginBtn").onclick = async () => {
+    try {
+      const credential = await signInWithEmailAndPassword(
+        auth, $("email").value.trim(), $("password").value
+      );
+      if (credential.user.uid !== ADMIN_UID) {
+        await signOut(auth);
+        message("adminMsg", "Admin access nahi hai.");
+        alert("Is account ko Admin access nahi hai.");
+        return;
+      }
+      show("admin");
+      await refreshAdminList();
+    } catch (e) {
+      alert("Login nahi hua. Email, password aur Firebase settings check karo.");
+    }
+  };
+
+  onAuthStateChanged(auth, user => {
+    if (user && user.uid === ADMIN_UID) {
+      show("admin");
+      refreshAdminList().catch(() => {});
+    }
+  });
+
+  $("saveBtn").onclick = async () => {
+    const user = auth.currentUser;
+    if (!user || user.uid !== ADMIN_UID) {
+      alert("Pehle Admin login karo.");
+      return;
+    }
+
+    const question = $("question").value.trim();
+    const options = [$("opt0").value.trim(), $("opt1").value.trim(),
+                     $("opt2").value.trim()];
+    const correctIndex = Number($("correct").value);
+
+    if (!question || options.some(x => !x)) {
+      message("adminMsg", "Question aur teeno options bharo.");
+      return;
+    }
+
+    $("saveBtn").disabled = true;
+    try {
+      await addDoc(collection(db, "questions"), {
+        question, options, correctIndex, createdAt: serverTimestamp()
+      });
+      $("question").value = "";
+      ["opt0", "opt1", "opt2"].forEach(id => $(id).value = "");
+      message("adminMsg", "Question Firestore mein save ho gaya! 💗");
+      await refreshAdminList();
+    } catch (e) {
+      message("adminMsg", "Save nahi hua. Firestore Rules aur config check karo.");
+      console.error(e);
+    } finally {
+      $("saveBtn").disabled = false;
+    }
+  };
+
+  $("logoutBtn").onclick = async () => {
+    await signOut(auth);
+    show("home");
+  };
+
+  document.querySelectorAll("[data-home]").forEach(b =>
+    b.onclick = () => show("home")
+  );
+
+  $("playBtn").onclick = async () => {
+    show("quiz");
+    $("answers").replaceChildren();
+    message("quizMsg", "Questions load ho rahe hain...");
+    try {
+      await loadQuestions();
+      if (!questions.length) {
+        message("quizMsg", "Abhi questions nahi hain. Baad mein try karo 💗");
+        return;
+      }
+      index = 0; score = 0;
+      renderQuestion();
+    } catch (e) {
+      message("quizMsg", "Questions load nahi hue. Firebase Rules check karo.");
+    }
+  };
+
+  function renderQuestion() {
+    if (index >= questions.length) {
+      $("quizQuestion").textContent =
+        `Quiz complete! Score: ${score}/${questions.length} 💕`;
+      $("progress").textContent = "Well done!";
+      $("answers").replaceChildren();
+      message("quizMsg", "Thanks for playing! 💗");
+      return;
+    }
+    const item = questions[index];
+    $("progress").textContent = `Question ${index + 1} / ${questions.length}`;
+    $("quizQuestion").textContent = item.question;
+    $("answers").replaceChildren();
+
+    item.options.forEach((option, i) => {
+      const b = document.createElement("button");
+      b.textContent = option;
+      b.onclick = () => {
+        if (i === item.correctIndex) score++;
+        index++;
+        renderQuestion();
+      };
+      $("answers").appendChild(b);
+    });
+    message("quizMsg", "");
+  }
 </script>
 </body>
 </html>
