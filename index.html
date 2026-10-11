@@ -82,8 +82,16 @@
     getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
   } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
   import {
-    getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp, deleteDoc
-  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy,
+  serverTimestamp,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
   // Firebase Console se apni asli values yahan bharo.
   const firebaseConfig = {
@@ -102,8 +110,12 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
   const $ = id => document.getElementById(id);
+  
   let questions = [];
   let index = 0, score = 0;
+  let playerName = "Anya";
+  let attemptAnswers = [];
+  let savingAttempt = false;
 
   function show(id) {
     ["home", "login", "admin", "quiz"].forEach(name =>
